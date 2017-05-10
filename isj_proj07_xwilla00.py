@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 
+"""
+Tomáš Willaschek (xwilla00)
+proj07
+"""
+
 import math
-
-total_calls = 0
-
 
 class TooManyCallsError(Exception):
     """
@@ -26,14 +28,14 @@ def limit_calls(max_calls=2, error_message_tail='called too often'):
     """
     def _limit_calls(func):
         def wrapper(a, b):
-            global total_calls
-            if total_calls < max_calls:
-                total_calls += 1
+            if wrapper.calls < max_calls:
+                wrapper.calls += 1
                 ret = func(a, b)
                 return ret
             else:
-                specific_error_message = '"pyth" - '+str(error_message_tail)
+                specific_error_message = 'function "'+func.__name__+'" - '+str(error_message_tail)
                 raise TooManyCallsError(specific_error_message)
+        wrapper.calls = 0
         return wrapper
     return _limit_calls
 
@@ -85,12 +87,12 @@ class Log():
         :param file: název souboru
         """
         self.f = open(file, 'w')
-        self.f.write('Begin\n')
 
     def __enter__(self):
         """
         Zápis do souboru
         """
+        self.f.write('Begin\n')
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -99,7 +101,6 @@ class Log():
         """
         self.f.write('End\n')
         self.f.close()
-        pass
 
     def logging(self, param):
         """
